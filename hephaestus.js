@@ -17,9 +17,6 @@ const hepha = {
         }
     }),
     templates: {},
-
-    get_templates: function() {return this.templates},
-    get_aliases : function() {return this.aliases},
 };
 
 // Makes a template from a hepha element
