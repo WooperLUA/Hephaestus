@@ -1,4 +1,4 @@
-# Hephaestus
+# 🔨 Hephaestus
 
 **Hephaestus** is a lightweight JavaScript library / framework that makes DOM manipulation less verbose and more intuitive.
 
