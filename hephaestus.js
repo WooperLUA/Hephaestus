@@ -8,9 +8,9 @@ import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
 
 
 const hepha = {
-    dev_mode:  false,
-    strict_alias : false,
-    aliases:   new Proxy({}, {
+    dev_mode:     false,
+    strict_alias: false,
+    aliases:      new Proxy({}, {
         get(target, prop)
         {
             const el = target[prop];
@@ -26,15 +26,14 @@ const hepha = {
             if (hepha.strict_alias)
             {
                 throw hepha_error(301);
-            }
-            else
+            } else
             {
                 target[prop] = value;
             }
             return true;
         }
     }),
-    templates: {},
+    templates:    {},
 };
 
 hepha.use_dev = () =>
@@ -135,14 +134,16 @@ const create_element = (tag, options = {}) =>
     return elt
 }
 
-// Basically adds all the tag builders to the window for reference
+// Basically adds all the tag builders to hepha
 function init()
 {
     tags.forEach(tag =>
     {
-        if (!window[tag])
-            window[tag] = options => create_element(tag, options)
-    })
+        if (!hepha[tag])
+        {
+            hepha[tag] = options => create_element(tag, options);
+        }
+    });
 }
 
 init();
