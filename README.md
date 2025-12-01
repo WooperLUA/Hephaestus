@@ -30,5 +30,7 @@ import hepha from './hephaestus.js';
 ```
 
 ## 📖 Usage
+See documentation :
+https://wooperlua.github.io/Hephaestus/
 
 
