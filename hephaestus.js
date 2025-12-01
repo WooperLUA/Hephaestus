@@ -4,34 +4,70 @@
 
  */
 
-import {hepha_error, options_whitelist, tags} from "./utils.js";
+import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
 
 
 const hepha = {
+    dev_mode:  false,
+    strict_alias : false,
     aliases:   new Proxy({}, {
         get(target, prop)
         {
             const el = target[prop];
             if (!el || !document.contains(el)) throw hepha_error(201);
             return el;
+        },
+        set(target, prop, value)
+        {
+            if (target[prop] && hepha.dev_mode)
+            {
+                console.warn(`[Hepha] Alias <|${prop}|> was overwritten, consider removing previous alias or defining a new one.`);
+            }
+            if (hepha.strict_alias)
+            {
+                throw hepha_error(301);
+            }
+            else
+            {
+                target[prop] = value;
+            }
+            return true;
         }
     }),
     templates: {},
 };
 
+hepha.use_dev = () =>
+{
+    hepha.dev_mode = !hepha.dev_mode;
+};
+
+hepha.use_strict_alias = () =>
+{
+    hepha.strict_alias = !hepha.strict_alias;
+}
+
 // Makes a template from a hepha element
 hepha.forge_template = (name, tag, options = {}) =>
 {
-    hepha.templates[name] = {tag, options};
+    hepha.templates[name] = {tag, options: structuredClone(options)};
+
+    if (hepha.dev_mode)
+        console.log(`[Hepha] Created template <|${name}|> being a ${tag}.`);
 };
 
 // Turns a template into a node
-hepha.use_template = (name) =>
+hepha.use_template = (name, overrides = {}) =>
 {
     const template = hepha.templates[name];
     if (!template) throw hepha_error(102);
 
-    return create_element(template.tag, {...template.options});
+    const merged = deep_merge(structuredClone(template.options), overrides);
+
+    if (hepha.dev_mode)
+        console.log(`[Hepha] Made an hepha element from template <|${name}|>.`);
+
+    return create_element(template.tag, merged);
 };
 
 const create_element = (tag, options = {}) =>
@@ -81,9 +117,20 @@ const create_element = (tag, options = {}) =>
     // Append the node to parent node
     elt.into = parent =>
     {
-        parent.appendChild(elt);
-        return elt
-    }
+        if (typeof parent === "string")
+        {
+            const p = document.querySelector(parent);
+            if (!p) throw hepha_error(202);
+            p.appendChild(elt);
+        } else
+        {
+            parent.appendChild(elt);
+        }
+        return elt;
+    };
+
+    if (hepha.dev_mode)
+        console.log(`[Hepha] Created ${tag} with alias : <|${options.alias || "unreferenced"}|>.`);
 
     return elt
 }
