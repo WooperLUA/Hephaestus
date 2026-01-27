@@ -6,24 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <style>
-        html {
+        html
+        {
             scroll-behavior: smooth;
-            animation: main-fade 1s ease-out forwards;
-        }
-        * {
-            margin: 10px;
-            padding: 0;
-            box-sizing: border-box;
-            font-optical-sizing: auto;
-        }
-        body {
-            position: relative;
-            min-height: 100dvh;
+            animation:       main-fade 1s ease-out forwards;
         }
 
-        @keyframes main-fade {
-            0% { opacity: 0; filter: blur(10px) brightness(0.8); }
-            100% { opacity: 1; filter: blur(0) brightness(1); }
+        *
+        {
+            margin:              10px;
+            padding:             0;
+            box-sizing:          border-box;
+            font-optical-sizing: auto;
+        }
+
+        body
+        {
+            position:       relative;
+            min-height:     100dvh;
+            display:        flex;
+            flex-direction: column;
+        }
+
+        header
+        {
+            padding:    2rem 0;
+            text-align: center;
+        }
+
+        .container-fluid
+        {
+            padding: 0 2rem;
+        }
+
+        #nav-menu
+        {
+            position:      sticky;
+            top:           0;
+            background:    var(--pico-background-color);
+            z-index:       1000;
+            border-bottom: 1px solid var(--pico-muted-border-color);
+            margin:        0;
+            padding:       0.5rem 1rem;
+        }
+
+        #nav-menu ul
+        {
+            justify-content: center;
+        }
+
+        @keyframes main-fade
+        {
+            0%
+            {
+                opacity: 0;
+                filter:  blur(10px) brightness(0.8);
+            }
+            100%
+            {
+                opacity: 1;
+                filter:  blur(0) brightness(1);
+            }
+        }
+
+        main
+        {
+            margin-top: 2rem;
         }
     </style>
     <link rel="stylesheet"
@@ -31,14 +79,28 @@
 </head>
 <body>
 
-<header>
+<header class="container">
     <h1>Hephaestus Documentation</h1>
     <p>Minimal JavaScript DOM builder and template engine</p>
 </header>
 
-<main>
+<nav id="nav-menu">
+    <ul class="container">
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#creating-elements">Creating Elements</a></li>
+        <li><a href="#into">.into()</a></li>
+        <li><a href="#templates">Templates</a></li>
+        <li><a href="#reactivity">Reactivity</a></li>
+        <li><a href="#dev-mode">Dev Mode</a></li>
+        <li><a href="#strict-alias">Strict Alias</a></li>
+        <li><a href="#errors">Errors</a></li>
+    </ul>
+</nav>
 
-    <h2>Introduction</h2>
+<main class="container">
+
+    <h2 id="introduction">Introduction</h2>
     <p>
         Hephaestus is a lightweight JavaScript library that makes DOM creation and templating concise, expressive,
         and safe. It provides a fully programmatic API for building DOM nodes and defining reusable component
@@ -57,12 +119,13 @@
     <div class="note">
         <strong>Important:</strong> Hephaestus is a singleton module.
         Importing it in multiple files returns the same instance.
-        This means all <b>aliases</b>, <b>templates</b>, and <b>tag builders</b> are shared globally across your project.
+        This means all <b>aliases</b>, <b>templates</b>, and <b>tag builders</b> are shared globally across your
+        project.
     </div>
 
     <hr>
 
-    <h2>Getting Started</h2>
+    <h2 id="getting-started">Getting Started</h2>
 
     <h3>Importing</h3>
     <pre><code>import hepha from "./hepha.js";</code></pre>
@@ -83,7 +146,7 @@ input, textarea, label, form, a, img
 
     <hr>
 
-    <h2>Creating Elements</h2>
+    <h2 id="creating-elements">Creating Elements</h2>
     <p>Each element is constructed with an <code>options</code> object:</p>
 
     <pre><code>const btn = hepha.button({
@@ -104,27 +167,57 @@ input, textarea, label, form, a, img
     <p>All other keys in options are treated as attributes of the element</p>
 
     <table>
-        <tr><th>Option</th><th>Type</th><th>Description</th><th>Notes</th></tr>
+        <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Notes</th>
+        </tr>
 
-        <tr><td>text</td><td>string</td><td>Sets <code>textContent</code></td><td></td></tr>
-        <tr><td>html</td><td>string</td><td>Sets <code>innerHTML</code></td><td></td></tr>
+        <tr>
+            <td>text</td>
+            <td>string</td>
+            <td>Sets <code>textContent</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>html</td>
+            <td>string</td>
+            <td>Sets <code>innerHTML</code></td>
+            <td></td>
+        </tr>
 
-        <tr><td>children</td><td>array</td><td>Array of child nodes</td>
-            <td>Can include Hepha elements or native DOM nodes</td></tr>
+        <tr>
+            <td>children</td>
+            <td>array</td>
+            <td>Array of child nodes</td>
+            <td>Can include Hepha elements or native DOM nodes</td>
+        </tr>
 
-        <tr><td>class</td><td>string</td><td>Space-separated class names</td><td></td></tr>
+        <tr>
+            <td>class</td>
+            <td>string</td>
+            <td>Space-separated class names</td>
+            <td></td>
+        </tr>
 
-        <tr><td>style</td><td>object</td>
+        <tr>
+            <td>style</td>
+            <td>object</td>
             <td>CSS style as snake_case (auto-converted to kebab-case)</td>
             <td><code>{ background_color: "red" }</code> → <code>background-color</code></td>
         </tr>
 
-        <tr><td>events</td><td>object</td>
+        <tr>
+            <td>events</td>
+            <td>object</td>
             <td>Event listeners (e.g. <code>{ click: fn }</code>)</td>
             <td>Automatically added with <code>addEventListener</code></td>
         </tr>
 
-        <tr><td>alias</td><td>string</td>
+        <tr>
+            <td>alias</td>
+            <td>string</td>
             <td>Registers the element globally</td>
             <td>Accessible via <code>hepha.aliases.&lt;name&gt;</code></td>
         </tr>
@@ -143,7 +236,7 @@ hepha.aliases.site_title.textContent = "Updated!";
 
     <hr>
 
-    <h2>Appending Elements with <code>.into()</code></h2>
+    <h2 id="into">Appending Elements with <code>.into()</code></h2>
 
     <pre><code>
 const card = hepha.div({ class: "card" }).into("#app");
@@ -163,7 +256,7 @@ const card = hepha.div({ class: "card" }).into("#app");
 
     <hr>
 
-    <h2>Templates</h2>
+    <h2 id="templates">Templates</h2>
     <p>Templates define reusable components with deep-merging behavior.</p>
 
     <h3>Creating a Template</h3>
@@ -206,7 +299,7 @@ override = { style: { padding: "20px" } }
 
     <hr>
 
-    <h2>Reactivity</h2>
+    <h2 id="reactivity">Reactivity</h2>
     <p>
         Hephaestus provides a simple reactivity system inspired by Vue. You can create reactive state and
         link it to element properties like <code>text</code>.
@@ -237,29 +330,47 @@ state.count++;
 
     <hr>
 
-    <h2>Dev Mode</h2>
+    <h2 id="dev-mode">Dev Mode</h2>
     <pre><code>hepha.use_dev();</code></pre>
 
     <p>Logs template creation, template usage, element creation, and alias overwrites.</p>
 
     <hr>
 
-    <h2>Strict Alias Mode</h2>
+    <h2 id="strict-alias">Strict Alias Mode</h2>
     <pre><code>hepha.use_strict_alias();</code></pre>
 
     <p>Prevents alias overwriting (error <code>301</code>).</p>
 
     <hr>
 
-    <h2>Error Codes</h2>
+    <h2 id="errors">Error Codes</h2>
 
     <table>
-        <tr><th>Code</th><th>Description</th></tr>
-        <tr><td>101</td><td>Component isn't a valid Hepha element</td></tr>
-        <tr><td>102</td><td>Template does not exist</td></tr>
-        <tr><td>201</td><td>Element is no longer in the DOM</td></tr>
-        <tr><td>202</td><td>Parent element not found</td></tr>
-        <tr><td>301</td><td>Alias overwrite blocked in strict mode</td></tr>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>101</td>
+            <td>Component isn't a valid Hepha element</td>
+        </tr>
+        <tr>
+            <td>102</td>
+            <td>Template does not exist</td>
+        </tr>
+        <tr>
+            <td>201</td>
+            <td>Element is no longer in the DOM</td>
+        </tr>
+        <tr>
+            <td>202</td>
+            <td>Parent element not found</td>
+        </tr>
+        <tr>
+            <td>301</td>
+            <td>Alias overwrite blocked in strict mode</td>
+        </tr>
     </table>
 
     <hr>
@@ -271,7 +382,7 @@ state.count++;
         <li>Use <code>hepha.init()</code> and <code>hepha.ref()</code> for dynamic UI updates.</li>
         <li>Enable <code>dev_mode</code> while developing.</li>
         <li>Remember: all files share the same Hepha instance.</li>
-        <li>Use snake_case for styles — Hepha converts it automatically.</li>
+        <li>Use snake_case for styles as Hepha converts it automatically.</li>
     </ul>
 
 </main>
