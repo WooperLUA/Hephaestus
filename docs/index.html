@@ -48,6 +48,7 @@
     <ul>
         <li>Builder functions for all major HTML tags — now namespaced under <code>hepha.*</code>.</li>
         <li>A robust template engine with deep-merging override logic.</li>
+        <li>Reactive state system for automatic DOM updates.</li>
         <li>Global aliasing system for cross-file element access.</li>
         <li>Optional dev-mode and strict aliasing for safer development.</li>
         <li>Singleton behavior — every file importing Hepha shares the same instance.</li>
@@ -205,6 +206,37 @@ override = { style: { padding: "20px" } }
 
     <hr>
 
+    <h2>Reactivity</h2>
+    <p>
+        Hephaestus provides a simple reactivity system inspired by Vue. You can create reactive state and
+        link it to element properties like <code>text</code>.
+    </p>
+
+    <h3>1. Initialize State</h3>
+    <p>
+        Use <code>hepha.init()</code> to create a reactive state object.
+    </p>
+    <pre><code>const state = hepha.init({ count: 0 });</code></pre>
+
+    <h3>2. Create a Reactive Reference</h3>
+    <p>
+        Use <code>hepha.ref()</code> to wrap a getter function that accesses your reactive state.
+        When passed to a Hepha element, the element will automatically update whenever the state changes.
+    </p>
+
+    <pre><code>
+// Snapshot: value won't update when state.count changes
+hepha.h1({ text: state.count }).into("body");
+
+// Reactive: h1 will automatically update when state.count changes
+hepha.h1({ text: hepha.ref(() => state.count) }).into("body");
+
+// Triggering an update:
+state.count++; 
+</code></pre>
+
+    <hr>
+
     <h2>Dev Mode</h2>
     <pre><code>hepha.use_dev();</code></pre>
 
@@ -236,6 +268,7 @@ override = { style: { padding: "20px" } }
     <ul>
         <li>Use aliases only for elements that must be accessed globally.</li>
         <li>Use templates for repetitive UI patterns.</li>
+        <li>Use <code>hepha.init()</code> and <code>hepha.ref()</code> for dynamic UI updates.</li>
         <li>Enable <code>dev_mode</code> while developing.</li>
         <li>Remember: all files share the same Hepha instance.</li>
         <li>Use snake_case for styles — Hepha converts it automatically.</li>
