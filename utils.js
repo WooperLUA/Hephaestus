@@ -1,4 +1,4 @@
-// All html tags that can be built
+
 const tags = [
     "div", "span", "p", "button", "h1", "h2", "h3", "h4", "h5", "h6",
     "ul", "ol", "li", "section", "article", "header", "footer", "main",
@@ -13,6 +13,7 @@ const options_whitelist = [
     "style"
 ]
 
+
 const errors = {
     "101": "Component passed isn't an hepha element",
     "102": "Forged component doesnt exist",
@@ -24,7 +25,7 @@ const errors = {
 }
 
 
-// This is to replace options in the use_template (I stole it)
+
 function deep_merge(base, overrides)
 {
     const output = structuredClone(base);

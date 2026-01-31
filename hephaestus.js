@@ -7,11 +7,24 @@
 import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
 
 
+/**
+ * The main Hephaestus object.
+ * Provides tools for reactive DOM manipulation and template management.
+ * @namespace
+ */
 const hepha = {
-    dev_mode:      false,
-    strict_alias:  false,
-    _sub:          null,
-    aliases:       new Proxy({}, {
+    /** @type {boolean} Enables or disables development logs. */
+    dev_mode: false,
+    /** @type {boolean} If true, prevents overwriting existing aliases. */
+    strict_alias: false,
+    /** @private @type {Function|null} Internal reference for reactivity subscription. */
+    _sub: null,
+    /**
+     * A proxy object for storing and accessing DOM element aliases.
+     * Throws an error if the accessed element is no longer in the document.
+     * @type {Object<string, HTMLElement>}
+     */
+    aliases: new Proxy({}, {
         get(target, prop)
         {
             const el = target[prop];
@@ -32,19 +45,35 @@ const hepha = {
             }
             return true;
         }
-    }), templates: {},
+    }),
+    /**
+     * Stored templates created via forge_template.
+     * @type {Object<string, {tag: string, options: Object}>}
+     */
+    templates: {},
 };
 
+/**
+ * Toggles development mode (logging).
+ */
 hepha.use_dev = () =>
 {
     hepha.dev_mode = !hepha.dev_mode;
 };
 
+/**
+ * Toggles strict alias mode.
+ */
 hepha.use_strict_alias = () =>
 {
     hepha.strict_alias = !hepha.strict_alias;
 }
 
+/**
+ * Creates a reactive state object.
+ * @param {Object} initialState - The initial state object.
+ * @returns {Proxy} A reactive proxy of the initial state.
+ */
 hepha.init = (initialState) =>
 {
     const deps = new Map();
@@ -71,6 +100,11 @@ hepha.init = (initialState) =>
     });
 };
 
+/**
+ * Creates a reference to a getter function for reactive values.
+ * @param {Function} getter - A function that returns a value.
+ * @returns {{__hepha_ref: boolean, get: Function}} A reference object.
+ */
 hepha.ref = (getter) =>
 {
     return {
@@ -78,7 +112,12 @@ hepha.ref = (getter) =>
     };
 };
 
-// Makes a template from a hepha element
+/**
+ * Registers a template that can be reused later.
+ * @param {string} name - The name of the template.
+ * @param {string} tag - The HTML tag name.
+ * @param {Object} [options={}] - Default options for the element.
+ */
 hepha.forge_template = (name, tag, options = {}) =>
 {
     hepha.templates[name] = {tag, options: structuredClone(options)};
@@ -86,7 +125,13 @@ hepha.forge_template = (name, tag, options = {}) =>
     if (hepha.dev_mode) console.log(`[Hepha] Created template <|${name}|> being a ${tag}.`);
 };
 
-// Turns a template into a node
+/**
+ * Creates an element from a registered template.
+ * @param {string} name - The name of the template to use.
+ * @param {Object} [overrides={}] - Options to override the template's defaults.
+ * @returns {HTMLElement} The created DOM element.
+ * @throws Will throw an error if the template does not exist.
+ */
 hepha.use_template = (name, overrides = {}) =>
 {
     const template = hepha.templates[name];
@@ -99,6 +144,20 @@ hepha.use_template = (name, overrides = {}) =>
     return create_element(template.tag, merged);
 };
 
+/**
+ * Internal function to create a DOM element with given options.
+ * @param {string} tag - The HTML tag name.
+ * @param {Object} [options={}] - Configuration options for the element.
+ * @param {string} [options.alias] - An alias to register the element under hepha.aliases.
+ * @param {string|{__hepha_ref: boolean, get: Function}} [options.text] - Text content or a reactive reference.
+ * @param {string} [options.html] - Inner HTML content.
+ * @param {HTMLElement[]} [options.children] - Array of child elements to append.
+ * @param {string} [options.class] - Space-separated CSS classes.
+ * @param {Object<string, Function>} [options.events] - Event listeners (e.g., {click: fn}).
+ * @param {Object} [options.style] - Inline styles in camelCase or snake_case.
+ * @returns {HTMLElement} The created DOM element.
+ * @private
+ */
 const create_element = (tag, options = {}) =>
 {
     const elt = document.createElement(tag)
@@ -156,7 +215,12 @@ const create_element = (tag, options = {}) =>
         if (!options_whitelist.includes(k)) elt.setAttribute(k, v)
     })
 
-    // Append the node to parent node
+    /**
+     * Appends the element to a parent.
+     * @memberof HTMLElement
+     * @param {string|HTMLElement} parent - A CSS selector or a DOM element.
+     * @returns {HTMLElement} The element itself.
+     */
     elt.into = parent =>
     {
         if (typeof parent === "string")
@@ -176,7 +240,10 @@ const create_element = (tag, options = {}) =>
     return elt
 }
 
-// Basically adds all the tag builders to hepha
+/**
+ * Initializes tag builders on the hepha object for all supported tags.
+ * @private
+ */
 function init_tags()
 {
     tags.forEach(tag =>
