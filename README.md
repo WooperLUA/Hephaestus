@@ -12,9 +12,9 @@ Hephaestus simplifies the creation and manipulation of DOM elements by providing
 - **Global Tag Builders** - All HTML tags are available as global functions (e.g., `div()`, `span()`, `button()`)
 - **Chainable calls** - Use the `.into()` method to append elements fluently
 - **Template System** - Define reusable element templates with `forge_template` and `use_template`
-- **Alias Management** - Reference elements globally by name using aliases
+- **Alias Management** - Reference elements globally by name (Recommended: `hepha.get_alias()`)
 - **Rich Options** - Configure text, HTML, classes, styles, events, attributes, and children in one object
-- **State Management** - Create reactive states with `init_state` and access them via `hepha.states`
+- **State Management** - Create reactive states with `init_state` (Recommended access: `hepha.get_state()`)
 
 ## ⚡ Installation
 

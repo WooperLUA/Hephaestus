@@ -20,6 +20,36 @@ import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
 
 
 /**
+ * Internal storage for aliases, templates, and states.
+ * @private
+ */
+const _aliases = new Proxy({}, {
+    get(target, prop)
+    {
+        const el = target[prop];
+        if (!el || !document.contains(el)) throw hepha_error(201);
+        return el;
+    }, set(target, prop, value)
+    {
+        if (target[prop] && hepha.dev_mode)
+        {
+            console.warn(`[Hepha] Alias <|${prop}|> was overwritten, consider removing previous alias or defining a new one.`);
+        }
+        if (hepha.strict_alias)
+        {
+            throw hepha_error(301);
+        } else
+        {
+            target[prop] = value;
+        }
+        return true;
+    }
+});
+
+const _templates = {};
+const _states = {};
+
+/**
  * The main Hephaestus object.
  * Provides tools for reactive DOM manipulation and template management.
  * @namespace
@@ -31,41 +61,46 @@ const hepha = {
     strict_alias: false,
     /** @private @type {Function|null} Internal reference for reactivity subscription. */
     _sub: null,
-    /**
-     * A proxy object for storing and accessing DOM element aliases.
-     * Throws an error if the accessed element is no longer in the document.
-     * @type {Object<string, HTMLElement>}
-     */
-    aliases: new Proxy({}, {
-        get(target, prop)
-        {
-            const el = target[prop];
-            if (!el || !document.contains(el)) throw hepha_error(201);
-            return el;
-        }, set(target, prop, value)
-        {
-            if (target[prop] && hepha.dev_mode)
-            {
-                console.warn(`[Hepha] Alias <|${prop}|> was overwritten, consider removing previous alias or defining a new one.`);
-            }
-            if (hepha.strict_alias)
-            {
-                throw hepha_error(301);
-            } else
-            {
-                target[prop] = value;
-            }
-            return true;
-        }
-    }),
-    /**
-     * Stored templates created via forge_template.
-     * @type {Object<string, {tag: string, options: Object}>}
-     */
-    templates: {},
-    states : {}
 
- };
+    /**
+     * Accessor for DOM element aliases.
+     * @returns {Object<string, HTMLElement>}
+     */
+    get aliases() { return _aliases; },
+
+    /**
+     * Accessor for stored templates.
+     * @returns {Object<string, {tag: string, options: Object}>}
+     */
+    get templates() { return _templates; },
+
+    /**
+     * Accessor for reactive states.
+     * @returns {Object<string, Proxy>}
+     */
+    get states() { return _states; },
+
+    /**
+     * Retrieves a registered alias.
+     * @param {string} name - The name of the alias.
+     * @returns {HTMLElement} The element.
+     */
+    get_alias(name) { return _aliases[name]; },
+
+    /**
+     * Retrieves a registered template.
+     * @param {string} name - The name of the template.
+     * @returns {Object} The template definition.
+     */
+    get_template(name) { return _templates[name]; },
+
+    /**
+     * Retrieves a registered reactive state.
+     * @param {string} name - The name of the state.
+     * @returns {Proxy} The reactive state.
+     */
+    get_state(name) { return _states[name]; }
+};
 
 /**
  * Toggles development mode (logging).

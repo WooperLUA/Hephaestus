@@ -119,8 +119,7 @@
     <div class="note">
         <strong>Important:</strong> Hephaestus is a singleton module.
         Importing it in multiple files returns the same instance.
-        This means all <b>aliases</b>, <b>templates</b>, and <b>tag builders</b> are shared globally across your
-        project.
+        While properties like <code>hepha.states</code> are available, it is <b>strongly recommended and insisted</b> that you use the getter methods (e.g., <code>hepha.get_state()</code>) for safer and more consistent access.
     </div>
 
     <hr>
@@ -230,7 +229,7 @@ select, option, optgroup, fieldset, legend
             <td>alias</td>
             <td>string</td>
             <td>Registers the element globally</td>
-            <td>Accessible via <code>hepha.aliases.&lt;name&gt;</code></td>
+            <td>Access via <code>hepha.get_alias(&lt;name&gt;)</code></td>
         </tr>
     </table>
 
@@ -242,7 +241,8 @@ const title = hepha.h1({
     alias: "site_title"
 }).into("body");
 
-hepha.aliases.site_title.textContent = "Updated!";
+// Recommended: Access via getter method
+hepha.get_alias("site_title").textContent = "Updated!";
 </code></pre>
 
     <hr>
@@ -319,10 +319,11 @@ override = { style: { padding: "20px" } }
     <h3>1. Initialize State</h3>
     <p>
         Use <code>hepha.init_state(name, initialState)</code> to create a named reactive state object.
-        The state is automatically registered in <code>hepha.states[name]</code>.
+        Access it using <code>hepha.get_state(name)</code>.
     </p>
     <pre><code>const state = hepha.init_state('main', { count: 0 });
-// Also accessible via hepha.states.main</code></pre>
+// Recommended access:
+const mainState = hepha.get_state('main');</code></pre>
 
     <h3>2. Create a Reactive Reference</h3>
     <p>
@@ -388,8 +389,9 @@ state.count++;
 
     <hr>
 
-    <h2>Best Practices</h2>
+    <h3>Best Practices</h3>
     <ul>
+        <li><b>Insist on using getter methods:</b> Always use <code>hepha.get_alias()</code>, <code>hepha.get_state()</code>, and <code>hepha.get_template()</code> instead of direct property access.</li>
         <li>Use aliases only for elements that must be accessed globally.</li>
         <li>Use templates for repetitive UI patterns.</li>
         <li>Use <code>hepha.init_state()</code> and <code>hepha.ref()</code> for dynamic UI updates.</li>
