@@ -92,8 +92,6 @@
         <li><a href="#into">.into()</a></li>
         <li><a href="#templates">Templates</a></li>
         <li><a href="#reactivity">Reactivity</a></li>
-        <li><a href="#stores">Stores</a></li>
-        <li><a href="#di">Dependency Injection</a></li>
         <li><a href="#dev-mode">Dev Mode</a></li>
         <li><a href="#strict-alias">Strict Alias</a></li>
         <li><a href="#errors">Errors</a></li>
@@ -345,36 +343,6 @@ state.count++;
 
     <hr>
 
-    <h2 id="stores">Global Stores</h2>
-    <p>
-        Stores are centralized reactive objects that can optionally persist their state to <code>localStorage</code>.
-    </p>
-    <pre><code>// Create a persistent store
-hepha.store('user_prefs', { theme: 'light' }, { persist: true });
-
-// Access it anywhere via hepha.stores
-const prefs = hepha.stores.user_prefs;
-
-hepha.div({
-    text: hepha.ref(() => `Theme is ${prefs.theme}`)
-}).into('body');
-</code></pre>
-
-    <hr>
-
-    <h2 id="di">Dependency Injection</h2>
-    <p>
-        Share services or configuration across your application without prop drilling using <code>provide</code> and <code>inject</code>.
-    </p>
-    <pre><code>// In your entry point
-hepha.provide('API_URL', 'https://api.example.com');
-
-// In any component
-const apiUrl = hepha.inject('API_URL');
-</code></pre>
-
-    <hr>
-
     <h2 id="dev-mode">Dev Mode</h2>
     <pre><code>hepha.use_dev();</code></pre>
 
@@ -425,7 +393,6 @@ const apiUrl = hepha.inject('API_URL');
         <li>Use aliases only for elements that must be accessed globally.</li>
         <li>Use templates for repetitive UI patterns.</li>
         <li>Use <code>hepha.init_state()</code> and <code>hepha.ref()</code> for dynamic UI updates.</li>
-        <li>Use <code>hepha.store()</code> for global and persistent state.</li>
         <li>Enable <code>dev_mode</code> while developing.</li>
         <li>Remember: all files share the same Hepha instance.</li>
         <li>Use snake_case for styles as Hepha converts it automatically.</li>
