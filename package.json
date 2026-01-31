@@ -1,0 +1,30 @@
+{
+  "name": "hephaestus_js",
+  "version": "1.1.0",
+  "description": "a lightweight js framework",
+  "main": "hephaestus.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WooperLUA/Hephaestus.git"
+  },
+  "author": "Woopa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WooperLUA/Hephaestus/issues"
+  },
+  "homepage": "https://github.com/WooperLUA/Hephaestus#readme",
+  "type": "module",
+  "exports": {
+    ".": "./hephaestus.js"
+  },
+  "files": [
+    "hephaestus.js",
+    "utils.js"
+  ]
+}
