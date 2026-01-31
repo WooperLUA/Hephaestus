@@ -63,6 +63,8 @@ const hepha = {
      * @type {Object<string, {tag: string, options: Object}>}
      */
     templates: {},
+    states : {}
+
  };
 
 /**
@@ -83,15 +85,16 @@ hepha.use_strict_alias = () =>
 
 /**
  * Creates a reactive state object.
+ * @param {string} name - The name of the state.
  * @param {Object} initialState - The initial state object.
  * @returns {Proxy} A reactive proxy of the initial state.
  */
-hepha.init = (initialState) =>
+hepha.init_state = (name, initialState) =>
 {
     const deps = new Map();
 
-    if (hepha.dev_mode) console.log(`[Hepha] Created a reactive variable with a value of ${initialState}.`);
-    return new Proxy(initialState, {
+    if (hepha.dev_mode) console.log(`[Hepha] Created a reactive variable "${name}" with a value of ${initialState}.`);
+    const proxy = new Proxy(initialState, {
         get(target, prop)
         {
             if (hepha._sub)
@@ -108,8 +111,10 @@ hepha.init = (initialState) =>
                 deps.get(prop).forEach(sub => sub());
             }
             return true;
-        }
-    });
+        }})
+
+    hepha.states[name] = proxy;
+    return proxy
 };
 
 /**

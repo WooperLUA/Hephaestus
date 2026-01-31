@@ -2,7 +2,11 @@
 const tags = [
     "div", "span", "p", "button", "h1", "h2", "h3", "h4", "h5", "h6",
     "ul", "ol", "li", "section", "article", "header", "footer", "main",
-    "input", "textarea", "label", "form", "a", "img"
+    "input", "textarea", "label", "form", "a", "img",
+    "nav", "aside", "figure", "figcaption",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "video", "audio", "source", "canvas", "svg",
+    "select", "option", "optgroup", "fieldset", "legend"
 ];
 
 const options_whitelist = [
