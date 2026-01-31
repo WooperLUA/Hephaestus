@@ -8,6 +8,18 @@ import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
 
 
 /**
+ * @typedef {Object} HephaOptions
+ * @property {string} [alias] - An alias to register the element under hepha.aliases.
+ * @property {string|{__hepha_ref: boolean, get: Function}} [text] - Text content or a reactive reference.
+ * @property {string} [html] - Inner HTML content.
+ * @property {HTMLElement[]} [children] - Array of child elements to append.
+ * @property {string} [class] - Space-separated CSS classes.
+ * @property {Object<string, Function>} [events] - Event listeners (e.g., {click: fn}).
+ * @property {Object} [style] - Inline styles in camelCase or snake_case.
+ */
+
+
+/**
  * The main Hephaestus object.
  * Provides tools for reactive DOM manipulation and template management.
  * @namespace
@@ -51,7 +63,7 @@ const hepha = {
      * @type {Object<string, {tag: string, options: Object}>}
      */
     templates: {},
-};
+ };
 
 /**
  * Toggles development mode (logging).
@@ -116,7 +128,7 @@ hepha.ref = (getter) =>
  * Registers a template that can be reused later.
  * @param {string} name - The name of the template.
  * @param {string} tag - The HTML tag name.
- * @param {Object} [options={}] - Default options for the element.
+ * @param {HephaOptions} [options={}] - Default options for the element.
  */
 hepha.forge_template = (name, tag, options = {}) =>
 {
@@ -128,7 +140,7 @@ hepha.forge_template = (name, tag, options = {}) =>
 /**
  * Creates an element from a registered template.
  * @param {string} name - The name of the template to use.
- * @param {Object} [overrides={}] - Options to override the template's defaults.
+ * @param {HephaOptions} [overrides={}] - Options to override the template's defaults.
  * @returns {HTMLElement} The created DOM element.
  * @throws Will throw an error if the template does not exist.
  */
@@ -144,20 +156,7 @@ hepha.use_template = (name, overrides = {}) =>
     return create_element(template.tag, merged);
 };
 
-/**
- * Internal function to create a DOM element with given options.
- * @param {string} tag - The HTML tag name.
- * @param {Object} [options={}] - Configuration options for the element.
- * @param {string} [options.alias] - An alias to register the element under hepha.aliases.
- * @param {string|{__hepha_ref: boolean, get: Function}} [options.text] - Text content or a reactive reference.
- * @param {string} [options.html] - Inner HTML content.
- * @param {HTMLElement[]} [options.children] - Array of child elements to append.
- * @param {string} [options.class] - Space-separated CSS classes.
- * @param {Object<string, Function>} [options.events] - Event listeners (e.g., {click: fn}).
- * @param {Object} [options.style] - Inline styles in camelCase or snake_case.
- * @returns {HTMLElement} The created DOM element.
- * @private
- */
+
 const create_element = (tag, options = {}) =>
 {
     const elt = document.createElement(tag)
@@ -240,10 +239,6 @@ const create_element = (tag, options = {}) =>
     return elt
 }
 
-/**
- * Initializes tag builders on the hepha object for all supported tags.
- * @private
- */
 function init_tags()
 {
     tags.forEach(tag =>

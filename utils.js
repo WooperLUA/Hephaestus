@@ -10,7 +10,8 @@ const options_whitelist = [
     "html",
     "children",
     "events",
-    "style"
+    "style",
+    "alias"
 ]
 
 

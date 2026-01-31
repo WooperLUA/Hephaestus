@@ -17,16 +17,20 @@ Hephaestus simplifies the creation and manipulation of DOM elements by providing
 
 ## ⚡ Installation
 
+Install via npm:
+
 ```bash
-# Clone the repository
-git clone https://github.com/WooperLUA/Hephaestus.git
-cd Hephaestus
+npm install hephaestus_js
 ```
 
-Then import Hephaestus in your project:
+## 🚀 Usage with Vite
+
+If you are using [Vite](https://vitejs.dev/), you can simply import Hephaestus in your main file:
 
 ```javascript
-import hepha from './hephaestus.js';
+import hepha from 'hephaestus_js';
+
+hepha.h1({ text: "Hello Hephaestus!" }).into("#app");
 ```
 
 ## 📖 Usage
