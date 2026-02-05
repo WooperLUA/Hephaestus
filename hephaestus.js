@@ -4,7 +4,7 @@
 
  */
 
-import {hepha_error, deep_merge, options_whitelist, tags} from "./utils.js";
+import {hepha_error, deep_merge, options_whitelist, tags, dev_logs} from "./utils.js";
 
 
 /**
@@ -128,7 +128,7 @@ hepha.init_state = (name, initialState) =>
 {
     const deps = new Map();
 
-    if (hepha.dev_mode) console.log(`[Hepha] Created a reactive variable "${name}" with a value of ${initialState}.`);
+    if (hepha.dev_mode) console.log(dev_logs.init_state(name, initialState));
     const proxy = new Proxy(initialState, {
         get(target, prop)
         {
@@ -174,7 +174,7 @@ hepha.forge_template = (name, tag, options = {}) =>
 {
     hepha.templates[name] = {tag, options: structuredClone(options)};
 
-    if (hepha.dev_mode) console.log(`[Hepha] Created template <|${name}|> being a ${tag}.`);
+    if (hepha.dev_mode) console.log(dev_logs.forge_template(name, tag));
 };
 
 /**
@@ -191,7 +191,7 @@ hepha.use_template = (name, overrides = {}) =>
 
     const merged = deep_merge(structuredClone(template.options), overrides);
 
-    if (hepha.dev_mode) console.log(`[Hepha] Made an hepha element from template <|${name}|>.`);
+    if (hepha.dev_mode) console.log(dev_logs.use_template(name));
 
     return create_element(template.tag, merged);
 };
@@ -274,7 +274,7 @@ const create_element = (tag, options = {}) =>
         return elt;
     };
 
-    if (hepha.dev_mode) console.log(`[Hepha] Created ${tag} with alias : <|${options.alias || "unreferenced"}|>.`);
+    if (hepha.dev_mode) console.log(dev_logs.create_element(tag, options));
 
     return elt
 }

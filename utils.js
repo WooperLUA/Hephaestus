@@ -1,4 +1,3 @@
-
 const tags = [
     "div", "span", "p", "button", "h1", "h2", "h3", "h4", "h5", "h6",
     "ul", "ol", "li", "section", "article", "header", "footer", "main",
@@ -26,9 +25,14 @@ const errors = {
     "202": "Parent queried doesnt exist",
 
     "301": "Alias must be unique (disable strict_alias to remove this error)"
-
 }
 
+const dev_logs = {
+    init_state: (name, initialState) => `[Hepha] Created a reactive state "${name}" with variables ${Object.keys(initialState)}.`,
+    forge_template : (name, tag) => `[Hepha] Created template <|${name}|> being a ${tag}.`,
+    use_template : (name) => `[Hepha] Made an hepha element from template <|${name}|>.`,
+    create_element : (tag, options) => `[Hepha] Created ${tag} with alias : <|${options.alias || "unreferenced"}|>.`
+}
 
 
 function deep_merge(base, overrides)
@@ -58,4 +62,4 @@ const hepha_error = (error_code) =>
     return new Error(`[Hepha] ${error_code} : ${errors[error_code]}`);
 }
 
-export {tags, options_whitelist, hepha_error, deep_merge};
+export {tags, options_whitelist, hepha_error, deep_merge, dev_logs};
