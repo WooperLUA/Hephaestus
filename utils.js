@@ -1,26 +1,17 @@
-const tags = [
-    "div", "span", "p", "button", "h1", "h2", "h3", "h4", "h5", "h6",
-    "ul", "ol", "li", "section", "article", "header", "footer", "main",
-    "input", "textarea", "label", "form", "a", "img",
-    "nav", "aside", "figure", "figcaption",
-    "table", "thead", "tbody", "tr", "th", "td",
-    "video", "audio", "source", "canvas", "svg",
-    "select", "option", "optgroup", "fieldset", "legend"
-];
-
 const options_whitelist = [
     "text",
     "html",
     "children",
     "events",
     "style",
-    "alias"
+    "alias",
+    "class"
 ]
 
 
 const errors = {
     "101": "Component passed isn't an hepha element",
-    "102": "Forged component doesnt exist",
+    "102": "Forged archetype doesnt exist",
     "201": "Element doesnt exist anymore",
     "202": "Parent queried doesnt exist",
 
@@ -29,8 +20,8 @@ const errors = {
 
 const dev_logs = {
     init_state: (name, initialState) => `[Hepha] Created a reactive state "${name}" with variables ${Object.keys(initialState)}.`,
-    forge_template : (name, tag) => `[Hepha] Created template <|${name}|> being a ${tag}.`,
-    use_template : (name) => `[Hepha] Made an hepha element from template <|${name}|>.`,
+    forge_archetype : (name, tag) => `[Hepha] Created archetype <|${name}|> being a ${tag}.`,
+    use_archetype : (name) => `[Hepha] Made an hepha element from archetype <|${name}|>.`,
     create_element : (tag, options) => `[Hepha] Created ${tag} with alias : <|${options.alias || "unreferenced"}|>.`
 }
 
@@ -62,4 +53,4 @@ const hepha_error = (error_code) =>
     return new Error(`[Hepha] ${error_code} : ${errors[error_code]}`);
 }
 
-export {tags, options_whitelist, hepha_error, deep_merge, dev_logs};
+export {options_whitelist, hepha_error, deep_merge, dev_logs};

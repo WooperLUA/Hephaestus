@@ -81,7 +81,7 @@
 
 <header class="container">
     <h1>Hephaestus Documentation</h1>
-    <p>Minimal JavaScript DOM builder and template engine</p>
+    <p>Minimal JavaScript DOM builder and archetype engine</p>
 </header>
 
 <nav id="nav-menu">
@@ -90,7 +90,7 @@
         <li><a href="#getting-started">Getting Started</a></li>
         <li><a href="#creating-elements">Creating Elements</a></li>
         <li><a href="#into">.into()</a></li>
-        <li><a href="#templates">Templates</a></li>
+        <li><a href="#archetypes">Archetypes</a></li>
         <li><a href="#reactivity">Reactivity</a></li>
         <li><a href="#dev-mode">Dev Mode</a></li>
         <li><a href="#strict-alias">Strict Alias</a></li>
@@ -102,14 +102,14 @@
 
     <h2 id="introduction">Introduction</h2>
     <p>
-        Hephaestus is a lightweight JavaScript library that makes DOM creation and templating concise, expressive,
+        Hephaestus is a lightweight JavaScript library that makes DOM creation and archetyping concise, expressive,
         and safe. It provides a fully programmatic API for building DOM nodes and defining reusable component
-        templates without dependencies or frameworks.
+        archetypes without dependencies or frameworks.
     </p>
 
     <ul>
-        <li>Builder functions for all major HTML tags — now namespaced under <code>hepha.*</code>.</li>
-        <li>A robust template engine with deep-merging override logic.</li>
+        <li>Builder function <code>hepha.relic()</code> for all major HTML tags.</li>
+        <li>A robust archetype engine with deep-merging override logic.</li>
         <li>Reactive state system for automatic DOM updates.</li>
         <li>Global aliasing system for cross-file element access.</li>
         <li>Optional dev-mode and strict aliasing for safer development.</li>
@@ -137,12 +137,12 @@
     <pre><code>import hepha from "./hephaestus.js";</code></pre>
 
     <p>
-        Once imported, all tag builders are available as:
+        Once imported, any element can be created using <code>hepha.relic()</code>:
     </p>
-    <pre><code>hepha.div(), hepha.span(), hepha.button(), hepha.h1(), ...</code></pre>
+    <pre><code>hepha.relic('div'), hepha.relic('span'), hepha.relic('button'), hepha.relic('h1'), ...</code></pre>
 
     <h3>Supported HTML Tags</h3>
-    <p>These builders are available through <code>hepha.&lt;tag&gt;</code>:</p>
+    <p>All HTML tags are supported via <code>hepha.relic(tag, options)</code>.</p>
 
     <pre>
 <code>div, span, p, button, h1-h6, ul, ol, li,
@@ -159,7 +159,7 @@ select, option, optgroup, fieldset, legend
     <h2 id="creating-elements">Creating Elements</h2>
     <p>Each element is constructed with an <code>options</code> object:</p>
 
-    <pre><code>const btn = hepha.button({
+    <pre><code>const btn = hepha.relic('button', {
     text: "Click me",
     class: "btn primary",
     alias: "main_btn",
@@ -236,7 +236,7 @@ select, option, optgroup, fieldset, legend
     <h3>Aliases Example</h3>
 
     <pre><code>
-const title = hepha.h1({
+const title = hepha.relic('h1', {
     text: "Welcome!",
     alias: "site_title"
 }).into("body");
@@ -250,7 +250,7 @@ hepha.get_alias("site_title").textContent = "Updated!";
     <h2 id="into">Appending Elements with <code>.into()</code></h2>
 
     <pre><code>
-const card = hepha.div({ class: "card" }).into("#app");
+const card = hepha.relic('div', { class: "card" }).into("#app");
 </code></pre>
 
     <p>
@@ -267,34 +267,34 @@ const card = hepha.div({ class: "card" }).into("#app");
 
     <hr>
 
-    <h2 id="templates">Templates</h2>
-    <p>Templates define reusable components with deep-merging behavior.</p>
+    <h2 id="archetypes">Archetypes</h2>
+    <p>Archetypes define reusable components with deep-merging behavior.</p>
 
-    <h3>Creating a Template</h3>
+    <h3>Creating an Archetype</h3>
 
     <pre><code>
-hepha.forge_template("card", "div", {
+hepha.forge_archetype("card", "div", {
     class: "card",
     style: { padding: "20px" },
     children: [
-        hepha.h2({ text: "Title" }),
-        hepha.p({ text: "This is a card." })
+        hepha.relic('h2', { text: "Title" }),
+        hepha.relic('p', { text: "This is a card." })
     ]
 });
 </code></pre>
 
-    <h3>Using a Template</h3>
+    <h3>Using an Archetype</h3>
 
     <pre><code>
-const box = hepha.use_template("card", {
+const box = hepha.use_archetype("card", {
     style: { background_color: "black" },
     children: [
-        hepha.p({ text: "Extra content!" })
+        hepha.relic('p', { text: "Extra content!" })
     ]
 }).into("body");
 </code></pre>
 
-    <h3>How templates treat overrides</h3>
+    <h3>How archetypes treat overrides</h3>
 
     <pre><code>
 base     = { style: { color: "red", padding: "10px" } }
@@ -304,7 +304,7 @@ override = { style: { padding: "20px" } }
 </code></pre>
 
     <div class="note">
-        <strong>Note:</strong> Templates and aliases are global across all imports,
+        <strong>Note:</strong> Archetypes and aliases are global across all imports,
         because Hepha is a shared singleton instance.
     </div>
 
@@ -333,10 +333,10 @@ const mainState = hepha.get_state('main');</code></pre>
 
     <pre><code>
 // Snapshot: value won't update when state.count changes
-hepha.h1({ text: state.count }).into("body");
+hepha.relic('h1', { text: state.count }).into("body");
 
 // Reactive: h1 will automatically update when state.count changes
-hepha.h1({ text: hepha.ref(() => state.count) }).into("body");
+hepha.relic('h1', { text: hepha.ref(() => state.count) }).into("body");
 
 // Triggering an update:
 state.count++; 
@@ -347,7 +347,7 @@ state.count++;
     <h2 id="dev-mode">Dev Mode</h2>
     <pre><code>hepha.use_dev();</code></pre>
 
-    <p>Logs template creation, template usage, element creation, and alias overwrites.</p>
+    <p>Logs archetype creation, archetype usage, element creation, and alias overwrites.</p>
 
     <hr>
 
@@ -371,7 +371,7 @@ state.count++;
         </tr>
         <tr>
             <td>102</td>
-            <td>Template does not exist</td>
+            <td>Archetype does not exist</td>
         </tr>
         <tr>
             <td>201</td>
@@ -391,9 +391,9 @@ state.count++;
 
     <h3>Best Practices</h3>
     <ul>
-        <li><b>Insist on using getter methods:</b> Always use <code>hepha.get_alias()</code>, <code>hepha.get_state()</code>, and <code>hepha.get_template()</code> instead of direct property access.</li>
+        <li><b>Insist on using getter methods:</b> Always use <code>hepha.get_alias()</code>, <code>hepha.get_state()</code>, and <code>hepha.get_archetype()</code> instead of direct property access.</li>
         <li>Use aliases only for elements that must be accessed globally.</li>
-        <li>Use templates for repetitive UI patterns.</li>
+        <li>Use archetypes for repetitive UI patterns.</li>
         <li>Use <code>hepha.init_state()</code> and <code>hepha.ref()</code> for dynamic UI updates.</li>
         <li>Enable <code>dev_mode</code> while developing.</li>
         <li>Remember: all files share the same Hepha instance.</li>

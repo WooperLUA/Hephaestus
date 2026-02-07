@@ -8,10 +8,9 @@ Hephaestus simplifies the creation and manipulation of DOM elements by providing
 
 ## 🌟 Features
 
-- **Concise Element Creation** - Create any HTML element with a simple function call
-- **Global Tag Builders** - All HTML tags are available as global functions (e.g., `div()`, `span()`, `button()`)
+- **Concise Element Creation** - Create any HTML element with `hepha.relic(tag, options)`
 - **Chainable calls** - Use the `.into()` method to append elements fluently
-- **Template System** - Define reusable element templates with `forge_template` and `use_template`
+- **Archetype System** - Define reusable element archetypes with `forge_archetype` and `use_archetype`
 - **Alias Management** - Reference elements globally by name (Recommended: `hepha.get_alias()`)
 - **Rich Options** - Configure text, HTML, classes, styles, events, attributes, and children in one object
 - **State Management** - Create reactive states with `init_state` (Recommended access: `hepha.get_state()`)
@@ -31,7 +30,7 @@ If you are using [Vite](https://vitejs.dev/), you can simply import Hephaestus i
 ```javascript
 import hepha from 'hephaestus_js';
 
-hepha.h1({ text: "Hello Hephaestus!" }).into("#app");
+hepha.relic('h1', { text: "Hello Hephaestus!" }).into("#app");
 ```
 
 ## 📖 Usage

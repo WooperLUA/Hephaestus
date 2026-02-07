@@ -4,7 +4,7 @@
 
  */
 
-import {hepha_error, deep_merge, options_whitelist, tags, dev_logs} from "./utils.js";
+import {hepha_error, deep_merge, options_whitelist, dev_logs} from "./utils.js";
 
 
 /**
@@ -20,7 +20,7 @@ import {hepha_error, deep_merge, options_whitelist, tags, dev_logs} from "./util
 
 
 /**
- * Internal storage for aliases, templates, and states.
+ * Internal storage for aliases, archetypes, and states.
  * @private
  */
 const _aliases = new Proxy({}, {
@@ -46,13 +46,13 @@ const _aliases = new Proxy({}, {
     }
 });
 
-const _templates = {};
+const _archetypes = {};
 const _states = {};
 
 /**
  * The main Hephaestus object.
- * Provides tools for reactive DOM manipulation and template management.
- * @namespace
+ * Provides tools for reactive DOM manipulation and archetype management.
+ * @type {import("./hephaestus").Hepha}
  */
 const hepha = {
     /** @type {boolean} Enables or disables development logs. */
@@ -66,40 +66,69 @@ const hepha = {
      * Accessor for DOM element aliases.
      * @returns {Object<string, HTMLElement>}
      */
-    get aliases() { return _aliases; },
+    get aliases()
+    {
+        return _aliases;
+    },
 
     /**
-     * Accessor for stored templates.
+     * Accessor for stored archetypes.
      * @returns {Object<string, {tag: string, options: Object}>}
      */
-    get templates() { return _templates; },
+    get archetypes()
+    {
+        return _archetypes;
+    },
 
     /**
      * Accessor for reactive states.
      * @returns {Object<string, Proxy>}
      */
-    get states() { return _states; },
+    get states()
+    {
+        return _states;
+    },
 
     /**
      * Retrieves a registered alias.
      * @param {string} name - The name of the alias.
      * @returns {HTMLElement} The element.
      */
-    get_alias(name) { return _aliases[name]; },
+    get_alias(name)
+    {
+        return _aliases[name];
+    },
 
     /**
-     * Retrieves a registered template.
-     * @param {string} name - The name of the template.
-     * @returns {Object} The template definition.
+     * Retrieves a registered archetype.
+     * @param {string} name - The name of the archetype.
+     * @returns {Object} The archetype definition.
      */
-    get_template(name) { return _templates[name]; },
+    get_archetype(name)
+    {
+        return _archetypes[name];
+    },
 
     /**
      * Retrieves a registered reactive state.
      * @param {string} name - The name of the state.
      * @returns {Proxy} The reactive state.
      */
-    get_state(name) { return _states[name]; }
+    get_state(name)
+    {
+        return _states[name];
+    },
+
+    /**
+     * Creates an element of the specified tag.
+     * @param {string} tag - The HTML tag name.
+     * @param {HephaOptions} [options={}] - Options for the element.
+     * @returns {HTMLElement} The created DOM element.
+     */
+    relic(tag, options = {})
+    {
+        return create_element(tag, options);
+    }
 };
 
 /**
@@ -146,7 +175,8 @@ hepha.init_state = (name, initialState) =>
                 deps.get(prop).forEach(sub => sub());
             }
             return true;
-        }})
+        }
+    })
 
     hepha.states[name] = proxy;
     return proxy
@@ -165,35 +195,35 @@ hepha.ref = (getter) =>
 };
 
 /**
- * Registers a template that can be reused later.
- * @param {string} name - The name of the template.
+ * Registers an archetype that can be reused later.
+ * @param {string} name - The name of the archetype.
  * @param {string} tag - The HTML tag name.
  * @param {HephaOptions} [options={}] - Default options for the element.
  */
-hepha.forge_template = (name, tag, options = {}) =>
+hepha.forge_archetype = (name, tag, options = {}) =>
 {
-    hepha.templates[name] = {tag, options: structuredClone(options)};
+    hepha.archetypes[name] = {tag, options: structuredClone(options)};
 
-    if (hepha.dev_mode) console.log(dev_logs.forge_template(name, tag));
+    if (hepha.dev_mode) console.log(dev_logs.forge_archetype(name, tag));
 };
 
 /**
- * Creates an element from a registered template.
- * @param {string} name - The name of the template to use.
- * @param {HephaOptions} [overrides={}] - Options to override the template's defaults.
+ * Creates an element from a registered archetype.
+ * @param {string} name - The name of the archetype to use.
+ * @param {HephaOptions} [overrides={}] - Options to override the archetype's defaults.
  * @returns {HTMLElement} The created DOM element.
- * @throws Will throw an error if the template does not exist.
+ * @throws Will throw an error if the archetype does not exist.
  */
-hepha.use_template = (name, overrides = {}) =>
+hepha.use_archetype = (name, overrides = {}) =>
 {
-    const template = hepha.templates[name];
-    if (!template) throw hepha_error(102);
+    const archetype = hepha.archetypes[name];
+    if (!archetype) throw hepha_error(102);
 
-    const merged = deep_merge(structuredClone(template.options), overrides);
+    const merged = deep_merge(structuredClone(archetype.options), overrides);
 
-    if (hepha.dev_mode) console.log(dev_logs.use_template(name));
+    if (hepha.dev_mode) console.log(dev_logs.use_archetype(name));
 
-    return create_element(template.tag, merged);
+    return create_element(archetype.tag, merged);
 };
 
 
@@ -234,7 +264,26 @@ const create_element = (tag, options = {}) =>
     if (options.children) options.children.forEach(c => elt.appendChild(c))
 
     // Add classes to the node
-    if (options.class) elt.classList.add(...options.class.split(" "));
+    if (options.class)
+    {
+        if (options.class.__hepha_ref)
+        {
+            const update = () =>
+            {
+                elt.className = options.class.get();
+            };
+
+            hepha._sub = update;
+            update();
+            hepha._sub = null;
+        }
+        else
+        {
+            elt.className = options.class;
+        }
+    }
+
+    //
 
     // Adds events to the node
     if (options.events) Object.entries(options.events).forEach(([evt, fn]) => elt.addEventListener(evt, fn))
@@ -248,10 +297,27 @@ const create_element = (tag, options = {}) =>
         });
     }
 
+
     // Adds the attributes of a node
     Object.entries(options).forEach(([k, v]) =>
     {
-        if (!options_whitelist.includes(k)) elt.setAttribute(k, v)
+        if (!options_whitelist.includes(k))
+        {
+            if (v && v.__hepha_ref)
+            {
+                const update = () =>
+                {
+                    elt.setAttribute(k, v.get());
+                };
+                hepha._sub = update;
+                update();
+                hepha._sub = null;
+            }
+            else
+            {
+                elt.setAttribute(k, v)
+            }
+        }
     })
 
     /**
@@ -279,17 +345,5 @@ const create_element = (tag, options = {}) =>
     return elt
 }
 
-function init_tags()
-{
-    tags.forEach(tag =>
-    {
-        if (!hepha[tag])
-        {
-            hepha[tag] = options => create_element(tag, options);
-        }
-    });
-}
-
-init_tags();
-
+/** @type {import("./hephaestus").Hepha} */
 export default hepha
