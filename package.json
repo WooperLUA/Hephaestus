@@ -1,6 +1,6 @@
 {
   "name": "hephaestus_js",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "a lightweight js framework",
   "main": "hephaestus.js",
   "types": "hephaestus.d.ts",
