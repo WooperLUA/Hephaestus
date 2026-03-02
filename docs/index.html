@@ -318,13 +318,15 @@ override = { style: { padding: "20px" } }
 
     <h3>1. Initialize State</h3>
     <p>
-        Use <code>hepha.init_state(name, initialState)</code> to create a named reactive state object.
+        Use <code>hepha.init_state(initialState, name)</code> or <code>hepha.init_state(initialState)</code>  to create a named reactive state object.
         Access it using <code>hepha.get_state(name)</code>.
     </p>
-    <pre><code>const state = hepha.init_state('main', { count: 0 });
-// Recommended access:
+    <pre><code>const state = hepha.init_state({ count: 0 }, 'main');
+// Recommendations :
+// Creation
+const mainState = hepha.init_state({ count : 0}, 'main') // Explicit naming is better, not using one makes it random
+// Access
 const mainState = hepha.get_state('main');</code></pre>
-
     <h3>2. Create a Reactive Reference</h3>
     <p>
         Use <code>hepha.ref()</code> to wrap a getter function that accesses your reactive state.

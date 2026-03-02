@@ -53,4 +53,15 @@ const hepha_error = (error_code) =>
     return new Error(`[Hepha] ${error_code} : ${errors[error_code]}`);
 }
 
-export {options_whitelist, hepha_error, deep_merge, dev_logs};
+const generate_state_name = () =>
+{
+    return btoa(String(Math.random() * 1000000))
+}
+
+export {
+    options_whitelist,
+    hepha_error,
+    deep_merge,
+    generate_state_name,
+    dev_logs
+};

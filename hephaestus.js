@@ -4,7 +4,13 @@
 
  */
 
-import {hepha_error, deep_merge, options_whitelist, dev_logs} from "./utils.js";
+import {
+    hepha_error,
+    deep_merge,
+    options_whitelist,
+    generate_state_name,
+    dev_logs
+} from "./utils.js";
 
 
 /**
@@ -149,11 +155,11 @@ hepha.use_strict_alias = () =>
 
 /**
  * Creates a reactive state object.
- * @param {string} name - The name of the state.
  * @param {Object} initialState - The initial state object.
+ * @param {string} name - The name of the state (optional).
  * @returns {Proxy} A reactive proxy of the initial state.
  */
-hepha.init_state = (name, initialState) =>
+hepha.init_state = (initialState, name = generate_state_name()) =>
 {
     const deps = new Map();
 
